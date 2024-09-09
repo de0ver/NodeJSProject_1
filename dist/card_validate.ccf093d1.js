@@ -593,26 +593,80 @@ var _cardValidator = require("card-validator");
 function checkCardNumber() {
     let number = document.getElementById("getCardNum");
     let date = document.getElementById("getCardDate");
-    let checkDate = _cardValidator.expirationDate(date.value, new Date().getFullYear() % 100).isValid;
+    let image = document.getElementById("bankLogo");
+    let checkDate = _cardValidator.expirationDate(date.value, new Date().getFullYear() % 100).isValid; //https://www.npmjs.com/package/card-validator?activeTab=readme#:~:text=valid.expirationDate(value%3A%20string%7Cobject%2C%20maxElapsedYear%3A%20integer)%3A%20object
+    //в описании написано что expirationDate возвращает object, а в реальности boolean
     let checkNumber = _cardValidator.number(number.value);
+    let imagesArr = new Map([
+        [
+            "American Express",
+            "https://www.svgrepo.com/show/473532/americanexpress.svg"
+        ],
+        [
+            "Diners Club",
+            "https://www.svgrepo.com/show/361985/diners-2.svg"
+        ],
+        [
+            "Discover",
+            "https://www.svgrepo.com/show/473587/discover.svg"
+        ],
+        [
+            "Elo",
+            "https://www.svgrepo.com/show/361992/elo-2.svg"
+        ],
+        [
+            "Hiper",
+            "https://www.svgrepo.com/show/328065/hiper.svg"
+        ],
+        [
+            "Hipercard",
+            "https://www.svgrepo.com/show/328082/hipercard.svg"
+        ],
+        [
+            "JCB",
+            "https://www.svgrepo.com/show/362000/jcb-2.svg"
+        ],
+        [
+            "Maestro",
+            "https://www.svgrepo.com/show/362010/maestro-old-1.svg"
+        ],
+        [
+            "Mastercard",
+            "https://www.svgrepo.com/show/362017/mastercard-old-1.svg"
+        ],
+        [
+            "Mir",
+            "https://www.svgrepo.com/show/328067/mir.svg"
+        ],
+        [
+            "UnionPay",
+            "https://i7.uihere.com/icons/631/896/3/unionpay-3989e4b888e59ebbaf3d3e564c3d00f1.png"
+        ],
+        [
+            "Visa",
+            "https://www.svgrepo.com/show/473823/visa.svg"
+        ]
+    ]);
     const errorMessageN = document.getElementById("errorMessageNum");
     const errorMessageD = document.getElementById("errorMessageDate");
-    if (!checkDate.isValid) {
-        errorMessageD.textContent = `Date type: mm/yy (${formatDate(new Date())})`;
+    if (!checkDate) {
+        if (date.value.substring(3, 5) < new Date().getFullYear() % 100) errorMessageD.textContent = "Credit Card Date is outdated";
+        else errorMessageD.textContent = `Date type: mm/yy (${formatDate(new Date())})`;
         errorMessageD.style.color = "red";
     } else {
-        errorMessageD.textContent = "Good!";
+        errorMessageD.textContent = "Credit Card Date not outdated!";
         errorMessageD.style.color = "green";
     }
     //if (!(/^\d{8,19}$/.test(number.value)))
-    if (!/^\d[0-9]{8,19}$/.test(number.value) && !/^\d[0-9]{4}\s\d[0-9]{4}\s\d[0-9]{4}\s\d[0-9]{4}$/.test(number.value)) {
-        errorMessageN.textContent = "Enter a valid Credit Card Number (exactly 8-19 digits)";
+    if (!checkNumber.isValid) {
+        errorMessageN.textContent = "Enter a valid Credit Card Number (exactly 13-19 digits)";
         errorMessageN.style.color = "red";
     } else {
-        errorMessageN.textContent = "Good!";
+        errorMessageN.textContent = "Credit Card Number valid!";
         errorMessageN.style.color = "green";
     }
-    if (!checkNumber.isValid || !checkDate.isValid) return;
+    if (!checkNumber.isValid || !checkDate) return;
+    if (imagesArr.has(checkNumber.card.niceType)) return image.src = imagesArr.get(checkNumber.card.niceType);
     return console.log(`Type: ${checkNumber.card.niceType}`);
 }
 function formatDate(date) {
@@ -623,53 +677,52 @@ function formatDate(date) {
     return mm + "/" + yy;
 }
 function createForm() {
-    const body = (0, _redom.el)("div", {
-        className: "card"
-    }, "Loading...");
-    (0, _redom.setChildren)(body);
     return (0, _redom.el)("div", {
         className: "container"
     }, (0, _redom.el)("form", {
         className: "cardCheck",
         action: ""
     }, [
-        (0, _redom.el)("h1", "Card validate"),
-        body,
-        (0, _redom.el)("label", "Enter card number: ", {
-            for: "getCardNum"
-        }),
-        (0, _redom.el)("input", {
-            type: "text",
-            id: "getCardNum",
-            inputmode: "numeric",
-            minlength: "8",
-            maxlength: "19"
-        }),
-        (0, _redom.el)("br"),
-        (0, _redom.el)("small", {
-            id: "errorMessageNum",
-            className: "form-text"
-        }),
-        (0, _redom.el)("br"),
-        (0, _redom.el)("label", "Enter card date: ", {
-            for: "getCardDate"
-        }),
-        (0, _redom.el)("input", {
-            type: "text",
-            id: "getCardDate",
-            pattern: "[0-9]{2}/[0-9]{2}/",
-            size: "5"
-        }),
-        (0, _redom.el)("br"),
-        (0, _redom.el)("small", {
-            id: "errorMessageDate",
-            className: "form-text"
-        }),
-        (0, _redom.el)("br"),
-        (0, _redom.el)("button", "Check!", {
-            type: "button",
-            onclick: checkCardNumber
-        })
+        (0, _redom.el)("h1", "Card validate", {}),
+        (0, _redom.el)("div", {
+            className: "card"
+        }, [
+            (0, _redom.el)("label", "Enter card number: ", {
+                for: "getCardNum"
+            }),
+            (0, _redom.el)("input", {
+                type: "text",
+                id: "getCardNum",
+                minlength: "8",
+                maxlength: "19"
+            }),
+            (0, _redom.el)("small", {
+                id: "errorMessageNum",
+                className: "form-text"
+            }),
+            (0, _redom.el)("label", "Enter card date: ", {
+                for: "getCardDate"
+            }),
+            (0, _redom.el)("input", {
+                type: "text",
+                id: "getCardDate",
+                pattern: "d{2}/d{2}",
+                maxlength: "5",
+                size: "5"
+            }),
+            (0, _redom.el)("small", {
+                id: "errorMessageDate",
+                className: "form-text"
+            }),
+            (0, _redom.el)("button", "Check!", {
+                type: "button",
+                onclick: checkCardNumber
+            }),
+            (0, _redom.el)("img", {
+                src: "",
+                id: "bankLogo" /*, alt: 'Here card bank logo'*/ 
+            })
+        ])
     ]));
 }
 (0, _redom.setChildren)(window.document.body, createForm());

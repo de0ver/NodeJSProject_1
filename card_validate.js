@@ -7,32 +7,55 @@ function checkCardNumber()
 {
     let number = document.getElementById('getCardNum');
     let date = document.getElementById('getCardDate');
-    let checkDate = validator.expirationDate(date.value, (new Date().getFullYear() % 100)).isValid;
+    let image = document.getElementById('bankLogo');
+    let checkDate = validator.expirationDate(date.value, (new Date().getFullYear() % 100)).isValid; //https://www.npmjs.com/package/card-validator?activeTab=readme#:~:text=valid.expirationDate(value%3A%20string%7Cobject%2C%20maxElapsedYear%3A%20integer)%3A%20object
+    //в описании написано что expirationDate возвращает object, а в реальности boolean
     let checkNumber = validator.number(number.value);
+    let imagesArr = new Map([  //node_modules\credit-card-type\dist\types.d.ts
+        ['American Express', 'https://www.svgrepo.com/show/473532/americanexpress.svg'],
+        ['Diners Club', 'https://www.svgrepo.com/show/361985/diners-2.svg'],
+        ['Discover', 'https://www.svgrepo.com/show/473587/discover.svg'],
+        ['Elo', 'https://www.svgrepo.com/show/361992/elo-2.svg'],
+        ['Hiper', 'https://www.svgrepo.com/show/328065/hiper.svg'],
+        ['Hipercard', 'https://www.svgrepo.com/show/328082/hipercard.svg'],
+        ['JCB', 'https://www.svgrepo.com/show/362000/jcb-2.svg'],
+        ['Maestro', 'https://www.svgrepo.com/show/362010/maestro-old-1.svg'],
+        ['Mastercard', 'https://www.svgrepo.com/show/362017/mastercard-old-1.svg'],
+        ['Mir', 'https://www.svgrepo.com/show/328067/mir.svg'],
+        ['UnionPay', 'https://i7.uihere.com/icons/631/896/3/unionpay-3989e4b888e59ebbaf3d3e564c3d00f1.png'],
+        ['Visa', 'https://www.svgrepo.com/show/473823/visa.svg']
+    ]
+    )
     const errorMessageN = document.getElementById('errorMessageNum');
     const errorMessageD = document.getElementById('errorMessageDate');
     
-    if (!(checkDate.isValid))
+    if (!checkDate)
     {
-        errorMessageD.textContent = `Date type: mm/yy (${formatDate(new Date())})`;
+        if ((date.value.substring(3, 5)) < new Date().getFullYear() % 100)
+            errorMessageD.textContent = 'Credit Card Date is outdated';
+        else
+            errorMessageD.textContent = `Date type: mm/yy (${formatDate(new Date())})`;
         errorMessageD.style.color = 'red'; 
     } else {
-        errorMessageD.textContent = 'Good!';
+        errorMessageD.textContent = 'Credit Card Date not outdated!';
         errorMessageD.style.color = 'green'; 
     }
     
     //if (!(/^\d{8,19}$/.test(number.value)))
-    if (!(/^\d[0-9]{8,19}$/.test(number.value)) && !(/^\d[0-9]{4}\s\d[0-9]{4}\s\d[0-9]{4}\s\d[0-9]{4}$/.test(number.value))) //!1234567891234567 || !1234 5678 9123 4567
+    if (!checkNumber.isValid) //!1234567891234567 || !1234 5678 9123 4567
     {
-        errorMessageN.textContent = 'Enter a valid Credit Card Number (exactly 8-19 digits)';
+        errorMessageN.textContent = 'Enter a valid Credit Card Number (exactly 13-19 digits)';
         errorMessageN.style.color = 'red'; 
     } else {
-        errorMessageN.textContent = 'Good!';
+        errorMessageN.textContent = 'Credit Card Number valid!';
         errorMessageN.style.color = 'green';
     }
 
-    if (!(checkNumber.isValid) || !(checkDate.isValid))
+    if (!(checkNumber.isValid) || !(checkDate))
         return;
+
+    if (imagesArr.has(checkNumber.card.niceType))
+        return image.src = imagesArr.get(checkNumber.card.niceType);
 
     return console.log(`Type: ${checkNumber.card.niceType}`);
 }
@@ -50,24 +73,21 @@ function formatDate(date) //https://learn.javascript.ru/datetime#%D1%84%D0%BE%D1
 
 function createForm()
 {
-    const body = el('div', {className: 'card'}, 'Loading...');
-    setChildren(body);
     return el('div', {className: 'container'}, 
                 el('form', {className: 'cardCheck', action: ''}, 
                     [
-                        el('h1', 'Card validate'), 
-                        body, 
-                        el('label', 'Enter card number: ', {for: 'getCardNum'}), 
-                        el('input', {type: 'text', id: 'getCardNum', inputmode: 'numeric', minlength: '8', maxlength: '19'}), //4 * 4 + 3 пробела = 19 символов https://en.wikipedia.org/wiki/Payment_card_number#:~:text=Payment%20card%20numbers%20are%20composed%20of%208%20to%2019%20digits
-                        el('br'),
-                        el('small', {id: 'errorMessageNum', className: 'form-text'}),
-                        el('br'),
-                        el('label', 'Enter card date: ', {for: 'getCardDate'}),
-                        el('input', {type: 'text', id: 'getCardDate', pattern: '[0-9]{2}\/[0-9]{2}\/', size: '5'}), //mm.yy 09/24
-                        el('br'),
-                        el('small', {id: 'errorMessageDate', className: 'form-text'}),
-                        el('br'),
-                        el('button', 'Check!', {type: 'button', onclick: checkCardNumber})
+                        el('h1', 'Card validate', {}), 
+                        el('div', {className: 'card'}, 
+                            [
+                                el('label', 'Enter card number: ', {for: 'getCardNum'}), 
+                                el('input', {type: 'text', id: 'getCardNum', minlength: '8', maxlength: '19'}), //4 * 4 + 3 пробела = 19 символов https://en.wikipedia.org/wiki/Payment_card_number#:~:text=Payment%20card%20numbers%20are%20composed%20of%208%20to%2019%20digits
+                                el('small', {id: 'errorMessageNum', className: 'form-text'}),
+                                el('label', 'Enter card date: ', {for: 'getCardDate'}),
+                                el('input', {type: 'text', id: 'getCardDate', pattern: '\d{2}\/\d{2}', maxlength: '5', size: '5'}), //mm.yy 09/24
+                                el('small', {id: 'errorMessageDate', className: 'form-text'}),
+                                el('button', 'Check!', {type: 'button', onclick: checkCardNumber}),
+                                el('img', {src: '', id: 'bankLogo'/*, alt: 'Here card bank logo'*/}),
+                            ]), 
                     ]
                  )
             );

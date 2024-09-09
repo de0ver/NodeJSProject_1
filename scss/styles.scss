@@ -1,1 +1,23 @@
 @import '../node_modules/bootstrap/scss/bootstrap.scss';
+
+body {
+    padding: 15%;
+}
+
+h1 {
+    text-align: center;
+}
+
+.card {
+    padding: 2.5%;
+}
+
+.container {
+    width: max-content;
+}
+
+#bankLogo {
+    padding-top: 1%;
+    width: auto;
+    height: auto;
+}
