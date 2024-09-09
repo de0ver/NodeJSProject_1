@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "card-validator": "^10.0.0",
+    "navigo": "^8.11.1",
+    "redom": "^4.1.5"
+  },
+  "name": "nodejsproject",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "parcel app/index.html --no-cache --open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.12.0",
+    "parcel": "^2.12.0"
+  }
+}
