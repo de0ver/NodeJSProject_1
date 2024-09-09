@@ -590,17 +590,57 @@ var _bootstrap = require("bootstrap");
 var _bootstrapDefault = parcelHelpers.interopDefault(_bootstrap);
 var _cardValidator = require("card-validator");
 //https://www.npmjs.com/package/card-validator
-function checkCardNumber(cardNumber) {
-    return console.log(_cardValidator.number(cardNumber));
+function checkCardNumber() {
+    let number = document.getElementById("getCardNum");
+    let date = document.getElementById("getCardDate");
+    if (date.value.length != 5) return alert(`Date type: mm/yy (${formatDate(new Date())})`);
+    if (number.value.length < 8 || number.value.length > 19) return alert("Minimum length: 8, Maximum length: 19");
+    return (0, _redom.el)("label");
+}
+function formatDate(date) {
+    var mm = date.getMonth() + 1;
+    if (mm < 10) mm = "0" + mm;
+    var yy = date.getFullYear() % 100;
+    if (yy < 10) yy = "0" + yy;
+    return mm + "/" + yy;
 }
 function createForm() {
     const body = (0, _redom.el)("div", {
         className: "card"
-    }, (0, _redom.el)("input", {
-        type: "text",
-        id: "getCard"
-    }));
+    }, "Loading...");
     (0, _redom.setChildren)(body);
+    return (0, _redom.el)("div", {
+        className: "container"
+    }, (0, _redom.el)("form", {
+        className: "cardCheck",
+        action: ""
+    }, [
+        (0, _redom.el)("h1", "Card validate"),
+        body,
+        (0, _redom.el)("label", "Enter card number: ", {
+            for: "getCardNum"
+        }),
+        (0, _redom.el)("input", {
+            type: "text",
+            id: "getCardNum",
+            inputmode: "numeric",
+            minlength: "8",
+            maxlength: "19"
+        }),
+        (0, _redom.el)("br"),
+        (0, _redom.el)("label", "Enter card date: ", {
+            for: "getCardDate"
+        }),
+        (0, _redom.el)("input", {
+            type: "\u0432\u0444\u0435\u0443",
+            id: "getCardDate",
+            pattern: "[0-9]{2}/[0-9]{2}/"
+        }),
+        (0, _redom.el)("button", "Check!", {
+            type: "button",
+            onclick: checkCardNumber
+        })
+    ]));
 }
 (0, _redom.setChildren)(window.document.body, createForm());
 
