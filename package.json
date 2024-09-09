@@ -10,7 +10,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "parcel app/index.html --no-cache --open"
+    "dev": "parcel app/index.html --no-cache --open",
+    "card": "parcel app/card_validate.html --no-cache --open"
   },
   "keywords": [],
   "author": "",
