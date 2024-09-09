@@ -593,9 +593,27 @@ var _cardValidator = require("card-validator");
 function checkCardNumber() {
     let number = document.getElementById("getCardNum");
     let date = document.getElementById("getCardDate");
-    if (date.value.length != 5) return alert(`Date type: mm/yy (${formatDate(new Date())})`);
-    if (number.value.length < 8 || number.value.length > 19) return alert("Minimum length: 8, Maximum length: 19");
-    return (0, _redom.el)("label");
+    let checkDate = _cardValidator.expirationDate(date.value, new Date().getFullYear() % 100).isValid;
+    let checkNumber = _cardValidator.number(number.value);
+    const errorMessageN = document.getElementById("errorMessageNum");
+    const errorMessageD = document.getElementById("errorMessageDate");
+    if (!checkDate.isValid) {
+        errorMessageD.textContent = `Date type: mm/yy (${formatDate(new Date())})`;
+        errorMessageD.style.color = "red";
+    } else {
+        errorMessageD.textContent = "Good!";
+        errorMessageD.style.color = "green";
+    }
+    //if (!(/^\d{8,19}$/.test(number.value)))
+    if (!/^\d[0-9]{8,19}$/.test(number.value) && !/^\d[0-9]{4}\s\d[0-9]{4}\s\d[0-9]{4}\s\d[0-9]{4}$/.test(number.value)) {
+        errorMessageN.textContent = "Enter a valid Credit Card Number (exactly 8-19 digits)";
+        errorMessageN.style.color = "red";
+    } else {
+        errorMessageN.textContent = "Good!";
+        errorMessageN.style.color = "green";
+    }
+    if (!checkNumber.isValid || !checkDate.isValid) return;
+    return console.log(`Type: ${checkNumber.card.niceType}`);
 }
 function formatDate(date) {
     var mm = date.getMonth() + 1;
@@ -628,14 +646,26 @@ function createForm() {
             maxlength: "19"
         }),
         (0, _redom.el)("br"),
+        (0, _redom.el)("small", {
+            id: "errorMessageNum",
+            className: "form-text"
+        }),
+        (0, _redom.el)("br"),
         (0, _redom.el)("label", "Enter card date: ", {
             for: "getCardDate"
         }),
         (0, _redom.el)("input", {
-            type: "\u0432\u0444\u0435\u0443",
+            type: "text",
             id: "getCardDate",
-            pattern: "[0-9]{2}/[0-9]{2}/"
+            pattern: "[0-9]{2}/[0-9]{2}/",
+            size: "5"
         }),
+        (0, _redom.el)("br"),
+        (0, _redom.el)("small", {
+            id: "errorMessageDate",
+            className: "form-text"
+        }),
+        (0, _redom.el)("br"),
         (0, _redom.el)("button", "Check!", {
             type: "button",
             onclick: checkCardNumber
