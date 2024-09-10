@@ -13189,7 +13189,7 @@ textarea.form-control-lg {
 }
 
 body {
-  padding: 15%;
+  padding: 12%;
 }
 
 h1, .h1 {
@@ -13197,16 +13197,16 @@ h1, .h1 {
 }
 
 .card {
-  padding: 2.5%;
+  padding: 3%;
 }
 
 .container {
-  width: max-content;
+  width: 50%;
+  height: max-content;
 }
 
 #bankLogo {
-  width: auto;
-  height: auto;
-  padding-top: 1%;
+  max-height: 150px;
+  padding: 5%;
 }
 /*# sourceMappingURL=card_validate.3b03301b.css.map */

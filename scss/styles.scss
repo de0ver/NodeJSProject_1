@@ -1,7 +1,7 @@
 @import '../node_modules/bootstrap/scss/bootstrap.scss';
 
 body {
-    padding: 15%;
+    padding: 12%;
 }
 
 h1 {
@@ -9,15 +9,15 @@ h1 {
 }
 
 .card {
-    padding: 2.5%;
+    padding: 3%;
 }
 
 .container {
-    width: max-content;
+    width: 50%;
+    height: max-content;
 }
 
 #bankLogo {
-    padding-top: 1%;
-    width: auto;
-    height: auto;
+    padding: 5%;
+    max-height: 150px; //почему то, не могу выставить максимальную высоту в процентах, всегда ставится высота изображения
 }

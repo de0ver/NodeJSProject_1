@@ -13187,4 +13187,26 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+
+body {
+  padding: 15%;
+}
+
+h1, .h1 {
+  text-align: center;
+}
+
+.card {
+  padding: 2.5%;
+}
+
+.container {
+  width: max-content;
+}
+
+#bankLogo {
+  width: auto;
+  height: auto;
+  padding-top: 1%;
+}
 /*# sourceMappingURL=index.3b03301b.css.map */
