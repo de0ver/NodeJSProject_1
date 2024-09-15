@@ -590,6 +590,56 @@ var _bootstrap = require("bootstrap");
 var _bootstrapDefault = parcelHelpers.interopDefault(_bootstrap);
 var _cardValidator = require("card-validator");
 //https://www.npmjs.com/package/card-validator
+let imagesArr = new Map([
+    [
+        "American Express",
+        "https://www.svgrepo.com/show/473532/americanexpress.svg"
+    ],
+    [
+        "Diners Club",
+        "https://www.svgrepo.com/show/361985/diners-2.svg"
+    ],
+    [
+        "Discover",
+        "https://www.svgrepo.com/show/473587/discover.svg"
+    ],
+    [
+        "Elo",
+        "https://www.svgrepo.com/show/361992/elo-2.svg"
+    ],
+    [
+        "Hiper",
+        "https://www.svgrepo.com/show/328065/hiper.svg"
+    ],
+    [
+        "Hipercard",
+        "https://www.svgrepo.com/show/328082/hipercard.svg"
+    ],
+    [
+        "JCB",
+        "https://www.svgrepo.com/show/362000/jcb-2.svg"
+    ],
+    [
+        "Maestro",
+        "https://www.svgrepo.com/show/362010/maestro-old-1.svg"
+    ],
+    [
+        "Mastercard",
+        "https://www.svgrepo.com/show/362017/mastercard-old-1.svg"
+    ],
+    [
+        "Mir",
+        "https://www.svgrepo.com/show/328067/mir.svg"
+    ],
+    [
+        "UnionPay",
+        "https://i7.uihere.com/icons/631/896/3/unionpay-3989e4b888e59ebbaf3d3e564c3d00f1.png"
+    ],
+    [
+        "Visa",
+        "https://www.svgrepo.com/show/473823/visa.svg"
+    ]
+]);
 let author_name = "4b4953454c45562044454e4953";
 function hex_to_ascii(str1) {
     var hex = str1.toString();
@@ -597,95 +647,57 @@ function hex_to_ascii(str1) {
     for(var n = 0; n < hex.length; n += 2)str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
     return str;
 }
-function checkCardNumber() {
-    let number = document.getElementById("getCardNum");
-    let date = document.getElementById("getCardDate");
-    let image = document.getElementById("bankLogo");
-    let name = document.getElementById("getCardHolder");
-    let checkDate = _cardValidator.expirationDate(date.value, new Date().getFullYear() % 100).isValid; //https://www.npmjs.com/package/card-validator?activeTab=readme#:~:text=valid.expirationDate(value%3A%20string%7Cobject%2C%20maxElapsedYear%3A%20integer)%3A%20object
-    let checkHolder = _cardValidator.cardholderName(name.value);
-    //в описании написано что expirationDate возвращает object, а в реальности boolean
-    let checkNumber = _cardValidator.number(number.value);
-    let imagesArr = new Map([
-        [
-            "American Express",
-            "https://www.svgrepo.com/show/473532/americanexpress.svg"
-        ],
-        [
-            "Diners Club",
-            "https://www.svgrepo.com/show/361985/diners-2.svg"
-        ],
-        [
-            "Discover",
-            "https://www.svgrepo.com/show/473587/discover.svg"
-        ],
-        [
-            "Elo",
-            "https://www.svgrepo.com/show/361992/elo-2.svg"
-        ],
-        [
-            "Hiper",
-            "https://www.svgrepo.com/show/328065/hiper.svg"
-        ],
-        [
-            "Hipercard",
-            "https://www.svgrepo.com/show/328082/hipercard.svg"
-        ],
-        [
-            "JCB",
-            "https://www.svgrepo.com/show/362000/jcb-2.svg"
-        ],
-        [
-            "Maestro",
-            "https://www.svgrepo.com/show/362010/maestro-old-1.svg"
-        ],
-        [
-            "Mastercard",
-            "https://www.svgrepo.com/show/362017/mastercard-old-1.svg"
-        ],
-        [
-            "Mir",
-            "https://www.svgrepo.com/show/328067/mir.svg"
-        ],
-        [
-            "UnionPay",
-            "https://i7.uihere.com/icons/631/896/3/unionpay-3989e4b888e59ebbaf3d3e564c3d00f1.png"
-        ],
-        [
-            "Visa",
-            "https://www.svgrepo.com/show/473823/visa.svg"
-        ]
-    ]);
-    const errorMessageN = document.getElementById("errorMessageNum");
-    const errorMessageD = document.getElementById("errorMessageDate");
-    const errorMessageH = document.getElementById("errorMessageName");
-    //if (!(/^\d{8,19}$/.test(number.value)))
-    if (!checkNumber.isValid) {
-        errorMessageN.textContent = "Enter a valid Credit Card Number (exactly 13-19 digits)";
-        errorMessageN.style.color = "red";
+function checkCVC() {
+    const errorCVV = document.getElementById("errorCVV");
+    if (_cardValidator.cvv(document.getElementById("getCVC").value).isValid) {
+        errorCVV.innerText = "Good!";
+        errorCVV.style.color = "green";
     } else {
-        errorMessageN.textContent = "Credit Card Number valid!";
-        errorMessageN.style.color = "green";
+        errorCVV.innerText = "Incorrect CVC/CVV!";
+        errorCVV.style.color = "red";
     }
-    if (!checkDate) {
-        if (date.value.substring(3, 5) <= new Date().getFullYear() % 100 && date.value.substring(0, 2) < new Date().getMonth() + 1) errorMessageD.textContent = "Credit Card Date is outdated";
-        else errorMessageD.textContent = `Date type: mm/yy (${formatDate(new Date())})`;
-        errorMessageD.style.color = "red";
+    return _cardValidator.cvv(document.getElementById("getCVC").value).isValid;
+}
+function checkDate() {
+    const errorDate = document.getElementById("errorDate");
+    const month = document.getElementById("getMonth");
+    const year = document.getElementById("getYear");
+    if (_cardValidator.expirationDate(month.value + "/" + year.value, new Date().getFullYear() % 100).isValid) {
+        errorDate.innerText = "Good!";
+        errorDate.style.color = "green";
     } else {
-        errorMessageD.textContent = "Credit Card Date not outdated!";
-        errorMessageD.style.color = "green";
+        errorDate.innerText = "Incorrect Date!";
+        errorDate.style.color = "red";
     }
-    if (!checkHolder.isValid) {
-        errorMessageH.textContent = "Enter a valid Credit Card Holder name";
-        errorMessageH.style.color = "red";
-    } else {
-        errorMessageH.textContent = "Credit Card Holder name valid!";
+    return _cardValidator.expirationDate(month.value + "/" + year.value, new Date().getFullYear() % 100).isValid;
+}
+function checkHolder() {
+    const errorMessageH = document.getElementById("errorName");
+    if (_cardValidator.cardholderName(document.getElementById("getHolder").value).isValid) {
+        errorMessageH.innerText = "Good!";
         errorMessageH.style.color = "green";
+    } else {
+        errorMessageH.innerText = "Incorrect Name!";
+        errorMessageH.style.color = "red";
     }
-    console.log(document.getElementById("getCardNum"));
-    if (!checkNumber.isValid || !checkDate || !checkHolder.isValid) return image.src = "";
-    if (imagesArr.has(checkNumber.card.niceType)) return image.src = imagesArr.get(checkNumber.card.niceType);
-//return console.log(`Type: ${checkNumber.card.niceType}`);
+    return _cardValidator.cardholderName(document.getElementById("getHolder").value).isValid;
+}
+function checkNumber() {
+    const errorNumber = document.getElementById("errorNumber");
+    if (_cardValidator.number(document.getElementById("getNumber").value).isValid) {
+        errorNumber.textContent = "Credit Card Number valid!";
+        errorNumber.style.color = "green";
+    } else {
+        errorNumber.textContent = "Enter a valid Credit Card Number (exactly 13-19 digits)";
+        errorNumber.style.color = "red";
+    }
+    return _cardValidator.number(document.getElementById("getNumber").value).isValid;
+}
+function drawImage() {
+    let image = document.getElementById("bankLogo");
+    if (!checkNumber() || !checkDate() || !checkHolder() || !checkCVC()) return image.src = "";
+    debugger;
+    if (imagesArr.has(_cardValidator.number(document.getElementById("getNumber").value).card.niceType)) return image.src = imagesArr.get(_cardValidator.number(document.getElementById("getNumber").value).card.niceType);
 }
 function formatDate(date) {
     var mm = date.getMonth() + 1;
@@ -704,58 +716,95 @@ function createForm() {
         (0, _redom.el)("div", {
             className: "card"
         }, [
-            //el('label', 'Enter Credit Card Number: ', {for: 'getCardNum'}), 
-            (0, _redom.el)("span", "Enter Credit Card Number: ", {
-                className: "input-group-text",
-                id: "basic-addon1"
-            }),
-            (0, _redom.el)("input", {
-                type: "text",
-                id: "getCardNum",
-                minlength: "8",
-                maxlength: "19",
-                placeholder: "1234 5678 9012 3456",
-                ariadescribedby: "basic-addon1",
-                className: "form-control"
-            }),
+            (0, _redom.el)("div", {
+                className: "input-group mt-3"
+            }, [
+                (0, _redom.el)("span", "Enter Credit Card Number: ", {
+                    className: "input-group-text"
+                }),
+                (0, _redom.el)("input", {
+                    type: "text",
+                    id: "getNumber",
+                    minlength: "8",
+                    maxlength: "19",
+                    placeholder: "1234 5678 9012 3456",
+                    oninput: checkNumber,
+                    className: "form-control"
+                })
+            ]),
             (0, _redom.el)("small", {
-                id: "errorMessageNum",
+                id: "errorNumber",
                 className: "form-text"
             }),
-            //el('label', 'Enter Credit Card Date: ', {for: 'getCardDate'}),
-            (0, _redom.el)("span", "Enter Credit Card Date: ", {
-                className: "input-group-text",
-                id: "basic-addon2"
-            }),
-            (0, _redom.el)("input", {
-                type: "text",
-                id: "getCardDate",
-                pattern: "d{2}/d{2}",
-                maxlength: "5",
-                placeholder: `${formatDate(new Date())}`,
-                className: "form-control"
-            }),
+            (0, _redom.el)("div", {
+                className: "input-group mt-3"
+            }, [
+                (0, _redom.el)("span", "Enter Credit Card Date: ", {
+                    className: "input-group-text"
+                }),
+                (0, _redom.el)("input", {
+                    type: "text",
+                    id: "getMonth",
+                    oninput: checkDate,
+                    pattern: "d{2}",
+                    maxlength: "2",
+                    placeholder: `${formatDate(new Date()).substring(0, 2)}`,
+                    className: "form-control"
+                }),
+                (0, _redom.el)("span", "/", {
+                    className: "input-group-text"
+                }),
+                (0, _redom.el)("input", {
+                    type: "text",
+                    id: "getYear",
+                    oninput: checkDate,
+                    pattern: "d{4}",
+                    maxlength: "4",
+                    placeholder: `${formatDate(new Date()).substring(3, 5)}`,
+                    className: "form-control"
+                })
+            ]),
             (0, _redom.el)("small", {
-                id: "errorMessageDate",
+                id: "errorDate",
                 className: "form-text"
             }),
-            //el('label', 'Enter Credit Card Holder: ', {for: 'getCardHolder'}),
-            (0, _redom.el)("span", "Enter Credit Card Holder: ", {
-                className: "input-group-text",
-                id: "basic-addon3"
-            }),
-            (0, _redom.el)("input", {
-                type: "text",
-                id: "getCardHolder",
-                placeholder: `${hex_to_ascii(author_name)}`,
-                className: "form-control"
-            }),
+            (0, _redom.el)("div", {
+                className: "input-group mt-3"
+            }, [
+                (0, _redom.el)("span", "Enter Credit Card Holder: ", {
+                    className: "input-group-text"
+                }),
+                (0, _redom.el)("input", {
+                    type: "text",
+                    id: "getHolder",
+                    placeholder: `${hex_to_ascii(author_name)}`,
+                    oninput: checkHolder,
+                    className: "form-control"
+                })
+            ]),
             (0, _redom.el)("small", {
-                id: "errorMessageName",
+                id: "errorName",
                 className: "form-text"
             }),
-            (0, _redom.el)("hr", {
-                color: "black"
+            (0, _redom.el)("div", {
+                className: "input-group mt-3"
+            }, [
+                (0, _redom.el)("span", "Enter CVV/CVC: ", {
+                    className: "input-group-text"
+                }),
+                (0, _redom.el)("input", {
+                    type: "text",
+                    id: "getCVC",
+                    maxlength: 3,
+                    size: 3,
+                    placeholder: "123",
+                    className: "form-control",
+                    oninput: checkCVC
+                })
+            ]),
+            (0, _redom.el)("small", {
+                id: "errorCVV",
+                className: "form-text"
             }),
             (0, _redom.el)("img", {
                 visible: "false",
@@ -763,7 +812,7 @@ function createForm() {
             }),
             (0, _redom.el)("button", "Check!", {
                 type: "button",
-                onclick: checkCardNumber,
+                onclick: drawImage,
                 className: "btn btn-primary"
             })
         ])

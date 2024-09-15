@@ -13197,7 +13197,10 @@ h1, .h1 {
 }
 
 .card {
+  justify-content: space-between;
+  align-items: center;
   padding: 3%;
+  display: flex;
 }
 
 .container {
