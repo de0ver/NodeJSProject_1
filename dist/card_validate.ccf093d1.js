@@ -591,7 +591,7 @@ var _bootstrapDefault = parcelHelpers.interopDefault(_bootstrap);
 var _cardValidator = require("card-validator");
 var _emailValidator = require("email-validator");
 //https://www.npmjs.com/package/card-validator
-let imagesArr = new Map([
+const imagesArr = new Map([
     [
         "American Express",
         "https://www.svgrepo.com/show/473532/americanexpress.svg"
@@ -641,7 +641,10 @@ let imagesArr = new Map([
         "https://www.svgrepo.com/show/473823/visa.svg"
     ]
 ]);
-let author_name = "64656E6973406B6973656C65762E7275";
+const green = "#00FF00";
+const red = "#FF0000";
+const good = "Good!";
+const author_name = "64656E6973406B6973656C65762E7275";
 function hex_to_ascii(str1) {
     var hex = str1.toString();
     var str = "";
@@ -649,55 +652,107 @@ function hex_to_ascii(str1) {
     return str;
 }
 function checkCVC() {
-    const errorCVV = document.getElementById("errorCVV");
-    if (_cardValidator.cvv(document.getElementById("getCVC").value).isValid) {
-        errorCVV.innerText = "Good!";
-        errorCVV.style.color = "green";
-    } else {
-        errorCVV.innerText = "Incorrect CVC/CVV!";
-        errorCVV.style.color = "red";
-    }
-    return _cardValidator.cvv(document.getElementById("getCVC").value).isValid;
+    return _cardValidator.cvv(cvc.value).isValid;
 }
 function checkDate() {
-    const errorDate = document.getElementById("errorDate");
-    const month = document.getElementById("getMonth");
-    const year = document.getElementById("getYear");
-    if (_cardValidator.expirationDate(month.value + "/" + year.value, new Date().getFullYear() % 100).isValid) {
-        errorDate.innerText = "Good!";
-        errorDate.style.color = "green";
-    } else {
-        errorDate.innerText = "Incorrect Date!";
-        errorDate.style.color = "red";
-    }
     return _cardValidator.expirationDate(month.value + "/" + year.value, new Date().getFullYear() % 100).isValid;
 }
 function checkEmail() {
-    const errorMessageH = document.getElementById("errorName");
-    if (_emailValidator.validate(document.getElementById("getEmail").value)) {
-        errorMessageH.innerText = "Good!";
-        errorMessageH.style.color = "green";
-    } else {
-        errorMessageH.innerText = "Incorrect Email!";
-        errorMessageH.style.color = "red";
-    }
-    return _emailValidator.validate(document.getElementById("getEmail").value);
+    return _emailValidator.validate(_emailValidator.value);
 }
 function checkNumber() {
-    const errorNumber = document.getElementById("errorNumber");
-    if (_cardValidator.number(document.getElementById("getNumber").value).isValid) {
-        errorNumber.textContent = "Credit Card Number valid!";
-        errorNumber.style.color = "green";
-    } else {
-        errorNumber.textContent = "Enter a valid Credit Card Number (exactly 13-19 digits)";
-        errorNumber.style.color = "red";
+    return _cardValidator.number(number.value).isValid;
+}
+function checker(id) {
+    switch(id){
+        case "getNumber":
+            if (_cardValidator.number(number.value).isValid) {
+                errorNumber.textContent = good;
+                errorNumber.style.color = green;
+            } else {
+                errorNumber.textContent = "Enter a valid Credit Card Number (exactly 13-19 digits)";
+                errorNumber.style.color = red;
+            }
+            break;
+        case "getMonth":
+        case "getYear":
+            if (_cardValidator.expirationDate(month.value + "/" + year.value, new Date().getFullYear() % 100).isValid) {
+                errorDate.innerText = good;
+                errorDate.style.color = green;
+            } else {
+                errorDate.innerText = "Incorrect Date!";
+                errorDate.style.color = red;
+            }
+            break;
+        case "getEmail":
+            if (_emailValidator.validate(_emailValidator.value)) {
+                errorEmail.innerText = good;
+                errorEmail.style.color = green;
+            } else {
+                errorEmail.innerText = "Incorrect Email!";
+                errorEmail.style.color = red;
+            }
+            break;
+        case "getCVC":
+            if (_cardValidator.cvv(document.getElementById("getCVC").value).isValid) {
+                errorCVV.innerText = good;
+                errorCVV.style.color = green;
+            } else {
+                errorCVV.innerText = "Incorrect CVC/CVV!";
+                errorCVV.style.color = red;
+            }
+            break;
     }
-    return _cardValidator.number(document.getElementById("getNumber").value).isValid;
+}
+function disableButton() {
+    !checkNumber() || !checkDate() || !checkEmail() || !checkCVC() ? btnpay.setAttribute("disabled", "disabled") : btnpay.removeAttribute("disabled");
+    return btnpay.hasAttribute("disabled");
+}
+function blurEvent(id) {
+    switch(id){
+        case "getNumber":
+            checkNumber();
+            break;
+        case "getMonth":
+        case "getYear":
+            checkDate();
+            break;
+        case "getEmail":
+            checkEmail();
+            break;
+        case "getCVC":
+            checkCVC();
+            break;
+    }
+    checker(id);
+    drawImage();
+    return;
+}
+function clearError(id) {
+    switch(id){
+        case "getNumber":
+            errorNumber.textContent = "";
+            break;
+        case "getMonth":
+        case "getYear":
+            errorDate.textContent = "";
+            break;
+        case "getEmail":
+            errorEmail.textContent = "";
+            break;
+        case "getCVC":
+            errorCVV.textContent = "";
+            break;
+    }
+    disableButton();
+    return;
 }
 function drawImage() {
-    let image = document.getElementById("bankLogo");
-    if (!checkNumber() || !checkDate() || !checkEmail() || !checkCVC()) return image.src = "";
-    if (imagesArr.has(_cardValidator.number(document.getElementById("getNumber").value).card.niceType)) return image.src = imagesArr.get(_cardValidator.number(document.getElementById("getNumber").value).card.niceType);
+    if (number.value) {
+        if (!checkNumber() || !checkDate() || !checkEmail() || !checkCVC()) image.src = "";
+        if (imagesArr.has(_cardValidator.number(number.value).card.niceType)) image.src = imagesArr.get(_cardValidator.number(number.value).card.niceType);
+    }
+    return image.src == "";
 }
 function formatDate(date) {
     var mm = date.getMonth() + 1;
@@ -728,7 +783,6 @@ function createForm() {
                     minlength: "8",
                     maxlength: "19",
                     placeholder: "1234 5678 9012 3456",
-                    oninput: checkNumber,
                     className: "form-control"
                 })
             ]),
@@ -745,7 +799,6 @@ function createForm() {
                 (0, _redom.el)("input", {
                     type: "text",
                     id: "getMonth",
-                    oninput: checkDate,
                     pattern: "d{2}",
                     maxlength: "2",
                     placeholder: `${formatDate(new Date()).substring(0, 2)}`,
@@ -757,7 +810,6 @@ function createForm() {
                 (0, _redom.el)("input", {
                     type: "text",
                     id: "getYear",
-                    oninput: checkDate,
                     pattern: "d{4}",
                     maxlength: "4",
                     placeholder: `${formatDate(new Date()).substring(3, 5)}`,
@@ -778,12 +830,11 @@ function createForm() {
                     type: "text",
                     id: "getEmail",
                     placeholder: `${hex_to_ascii(author_name)}`,
-                    oninput: checkEmail,
                     className: "form-control"
                 })
             ]),
             (0, _redom.el)("small", {
-                id: "errorName",
+                id: "errorEmail",
                 className: "form-text"
             }),
             (0, _redom.el)("div", {
@@ -798,8 +849,7 @@ function createForm() {
                     maxlength: 3,
                     size: 3,
                     placeholder: "123",
-                    className: "form-control",
-                    oninput: checkCVC
+                    className: "form-control"
                 })
             ]),
             (0, _redom.el)("small", {
@@ -810,15 +860,42 @@ function createForm() {
                 visible: "false",
                 id: "bankLogo" /*, alt: 'Here card bank logo'*/ 
             }),
-            (0, _redom.el)("button", "Check!", {
+            (0, _redom.el)("button", "Pay!", {
+                id: "btnPay",
+                disabled: "disabled",
                 type: "button",
-                onclick: drawImage,
                 className: "btn btn-primary"
             })
         ])
     ]));
 }
 (0, _redom.setChildren)(window.document.body, createForm());
+const errorNumber = document.getElementById("errorNumber");
+const errorEmail = document.getElementById("errorEmail");
+const errorDate = document.getElementById("errorDate");
+const errorCVV = document.getElementById("errorCVV");
+const month = document.getElementById("getMonth");
+const year = document.getElementById("getYear");
+const image = document.getElementById("bankLogo");
+const number = document.getElementById("getNumber");
+const btnpay = document.getElementById("btnPay");
+const email = document.getElementById("getEmail");
+const cvc = document.getElementById("getCVC");
+getNumber.onblur = ()=>blurEvent(getNumber.id); //0_0
+getMonth.onblur = ()=>blurEvent(getMonth.id);
+getYear.onblur = ()=>blurEvent(getYear.id);
+getEmail.onblur = ()=>blurEvent(getEmail.id);
+getCVC.onblur = ()=>blurEvent(getCVC.id);
+getNumber.oninput = ()=>clearError(getNumber.id); //0_0
+getMonth.oninput = ()=>clearError(getMonth.id);
+getYear.oninput = ()=>clearError(getYear.id);
+getEmail.oninput = ()=>clearError(getEmail.id);
+getCVC.oninput = ()=>clearError(getCVC.id);
+getNumber.onfocus = ()=>clearError(getNumber.id); //0_0
+getMonth.onfocus = ()=>clearError(getMonth.id);
+getYear.onfocus = ()=>clearError(getYear.id);
+getEmail.onfocus = ()=>clearError(getEmail.id);
+getCVC.onfocus = ()=>clearError(getCVC.id);
 
 },{"redom":"cWIuY","bootstrap":"h36JB","card-validator":"1dvO8","email-validator":"gi6bx","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cWIuY":[function(require,module,exports) {
 (function(global, factory) {
