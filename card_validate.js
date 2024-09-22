@@ -65,7 +65,7 @@ function checker(id)
             }
         break;
         case 'getEmail':
-            if (email.validate(email.value))
+            if (email.validate(emailval.value))
             {
                 errorEmail.innerText = good;
                 errorEmail.style.color = green;
@@ -75,7 +75,7 @@ function checker(id)
             }
         break;
         case 'getCVC':
-            if (validator.cvv(document.getElementById('getCVC').value).isValid)
+            if (validator.cvv(cvc.value).isValid)
             {
                 errorCVV.innerText = good;
                 errorCVV.style.color = green;
@@ -221,13 +221,13 @@ const errorNumber = document.getElementById('errorNumber');
 const errorEmail = document.getElementById('errorEmail');
 const errorDate = document.getElementById('errorDate');
 const errorCVV = document.getElementById('errorCVV');
-const month = document.getElementById('getMonth');
-const year = document.getElementById('getYear');
 const image = document.getElementById('bankLogo');
 const number = document.getElementById('getNumber');
 const btnpay = document.getElementById('btnPay');
-const email = document.getElementById('getEmail');
+const emailval = document.getElementById('getEmail');
 const cvc = document.getElementById('getCVC');
+const month = document.getElementById('getMonth');
+const year = document.getElementById('getYear');
 
 getNumber.onblur = () => blurEvent(getNumber.id); //0_0
 getMonth.onblur = () => blurEvent(getMonth.id);
