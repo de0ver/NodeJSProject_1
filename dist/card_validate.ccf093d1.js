@@ -886,12 +886,12 @@ getMonth.onblur = ()=>blurEvent(getMonth.id);
 getYear.onblur = ()=>blurEvent(getYear.id);
 getEmail.onblur = ()=>blurEvent(getEmail.id);
 getCVC.onblur = ()=>blurEvent(getCVC.id);
-getNumber.oninput = ()=>clearError(getNumber.id); //0_0
+getNumber.oninput = ()=>clearError(getNumber.id);
 getMonth.oninput = ()=>clearError(getMonth.id);
 getYear.oninput = ()=>clearError(getYear.id);
 getEmail.oninput = ()=>clearError(getEmail.id);
 getCVC.oninput = ()=>clearError(getCVC.id);
-getNumber.onfocus = ()=>clearError(getNumber.id); //0_0
+getNumber.onfocus = ()=>clearError(getNumber.id);
 getMonth.onfocus = ()=>clearError(getMonth.id);
 getYear.onfocus = ()=>clearError(getYear.id);
 getEmail.onfocus = ()=>clearError(getEmail.id);
