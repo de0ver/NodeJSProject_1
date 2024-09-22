@@ -2,6 +2,7 @@
   "dependencies": {
     "bootstrap": "^5.3.3",
     "card-validator": "^10.0.0",
+    "email-validator": "^2.0.4",
     "navigo": "^8.11.1",
     "redom": "^4.1.5"
   },

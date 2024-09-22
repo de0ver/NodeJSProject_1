@@ -1,6 +1,7 @@
 import {el, setChildren} from 'redom';
 import bootstrap from 'bootstrap';
 import * as validator from 'card-validator';
+import * as email from 'email-validator';
 //https://www.npmjs.com/package/card-validator
 
 let imagesArr = new Map([  //node_modules\credit-card-type\dist\types.d.ts
@@ -19,7 +20,7 @@ let imagesArr = new Map([  //node_modules\credit-card-type\dist\types.d.ts
 ]
 );
 
-let author_name = '4b4953454c45562044454e4953';
+let author_name = '64656E6973406B6973656C65762E7275';
 function hex_to_ascii(str1) { //https://www.w3resource.com/javascript-exercises/javascript-string-exercise-28.php
     var hex = str1.toString();
     var str = '';
@@ -60,18 +61,19 @@ function checkDate()
     return validator.expirationDate(month.value + "/" + year.value, (new Date().getFullYear() % 100)).isValid;
 }
 
-function checkHolder()
+function checkEmail()
 {
     const errorMessageH = document.getElementById('errorName');
-    if (validator.cardholderName(document.getElementById('getHolder').value).isValid)
+
+    if (email.validate(document.getElementById('getEmail').value))
     {
         errorMessageH.innerText = 'Good!';
         errorMessageH.style.color = 'green';
     } else {
-        errorMessageH.innerText = 'Incorrect Name!';
+        errorMessageH.innerText = 'Incorrect Email!';
         errorMessageH.style.color = 'red';
     }
-    return validator.cardholderName(document.getElementById('getHolder').value).isValid;
+    return email.validate(document.getElementById('getEmail').value);
 }
 
 function checkNumber()
@@ -92,10 +94,8 @@ function checkNumber()
 function drawImage()
 {
     let image = document.getElementById('bankLogo');
-    if (!checkNumber() || !checkDate() || !checkHolder() || !checkCVC())
+    if (!checkNumber() || !checkDate() || !checkEmail() || !checkCVC())
         return image.src = '';
-
-    debugger;
 
     if (imagesArr.has(validator.number(document.getElementById('getNumber').value).card.niceType))
         return image.src = imagesArr.get(validator.number(document.getElementById('getNumber').value).card.niceType);
@@ -119,7 +119,7 @@ function createForm()
     return el('div', {className: 'container'}, 
                 el('form', {className: 'cardCheck'}, 
                     [
-                        el('h1', 'Card validate'), 
+                        el('h1', 'Order execution'), 
                         el('div', {className: 'card'}, 
                             [ 
                                 el('div', {className: 'input-group mt-3'}, 
@@ -140,8 +140,8 @@ function createForm()
 
                                 el('div', {className: 'input-group mt-3'}, 
                                 [
-                                    el('span', 'Enter Credit Card Holder: ', {className: 'input-group-text'}),
-                                    el('input', {type: 'text', id: 'getHolder', placeholder: `${hex_to_ascii(author_name)}`, oninput: checkHolder, className: 'form-control'}),
+                                    el('span', 'Enter Email: ', {className: 'input-group-text'}),
+                                    el('input', {type: 'text', id: 'getEmail', placeholder: `${hex_to_ascii(author_name)}`, oninput: checkEmail, className: 'form-control'}),
                                 ]),
                                 el('small', {id: 'errorName', className: 'form-text'}),
                                 

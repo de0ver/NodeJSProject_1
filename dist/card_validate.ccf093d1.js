@@ -589,6 +589,7 @@ var _redom = require("redom");
 var _bootstrap = require("bootstrap");
 var _bootstrapDefault = parcelHelpers.interopDefault(_bootstrap);
 var _cardValidator = require("card-validator");
+var _emailValidator = require("email-validator");
 //https://www.npmjs.com/package/card-validator
 let imagesArr = new Map([
     [
@@ -640,7 +641,7 @@ let imagesArr = new Map([
         "https://www.svgrepo.com/show/473823/visa.svg"
     ]
 ]);
-let author_name = "4b4953454c45562044454e4953";
+let author_name = "64656E6973406B6973656C65762E7275";
 function hex_to_ascii(str1) {
     var hex = str1.toString();
     var str = "";
@@ -671,16 +672,16 @@ function checkDate() {
     }
     return _cardValidator.expirationDate(month.value + "/" + year.value, new Date().getFullYear() % 100).isValid;
 }
-function checkHolder() {
+function checkEmail() {
     const errorMessageH = document.getElementById("errorName");
-    if (_cardValidator.cardholderName(document.getElementById("getHolder").value).isValid) {
+    if (_emailValidator.validate(document.getElementById("getEmail").value)) {
         errorMessageH.innerText = "Good!";
         errorMessageH.style.color = "green";
     } else {
-        errorMessageH.innerText = "Incorrect Name!";
+        errorMessageH.innerText = "Incorrect Email!";
         errorMessageH.style.color = "red";
     }
-    return _cardValidator.cardholderName(document.getElementById("getHolder").value).isValid;
+    return _emailValidator.validate(document.getElementById("getEmail").value);
 }
 function checkNumber() {
     const errorNumber = document.getElementById("errorNumber");
@@ -695,8 +696,7 @@ function checkNumber() {
 }
 function drawImage() {
     let image = document.getElementById("bankLogo");
-    if (!checkNumber() || !checkDate() || !checkHolder() || !checkCVC()) return image.src = "";
-    debugger;
+    if (!checkNumber() || !checkDate() || !checkEmail() || !checkCVC()) return image.src = "";
     if (imagesArr.has(_cardValidator.number(document.getElementById("getNumber").value).card.niceType)) return image.src = imagesArr.get(_cardValidator.number(document.getElementById("getNumber").value).card.niceType);
 }
 function formatDate(date) {
@@ -712,7 +712,7 @@ function createForm() {
     }, (0, _redom.el)("form", {
         className: "cardCheck"
     }, [
-        (0, _redom.el)("h1", "Card validate"),
+        (0, _redom.el)("h1", "Order execution"),
         (0, _redom.el)("div", {
             className: "card"
         }, [
@@ -771,14 +771,14 @@ function createForm() {
             (0, _redom.el)("div", {
                 className: "input-group mt-3"
             }, [
-                (0, _redom.el)("span", "Enter Credit Card Holder: ", {
+                (0, _redom.el)("span", "Enter Email: ", {
                     className: "input-group-text"
                 }),
                 (0, _redom.el)("input", {
                     type: "text",
-                    id: "getHolder",
+                    id: "getEmail",
                     placeholder: `${hex_to_ascii(author_name)}`,
-                    oninput: checkHolder,
+                    oninput: checkEmail,
                     className: "form-control"
                 })
             ]),
@@ -820,7 +820,7 @@ function createForm() {
 }
 (0, _redom.setChildren)(window.document.body, createForm());
 
-},{"redom":"cWIuY","bootstrap":"h36JB","card-validator":"1dvO8","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cWIuY":[function(require,module,exports) {
+},{"redom":"cWIuY","bootstrap":"h36JB","card-validator":"1dvO8","email-validator":"gi6bx","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cWIuY":[function(require,module,exports) {
 (function(global, factory) {
     factory(exports);
 })(this, function(exports1) {
@@ -8092,6 +8092,28 @@ function postalCode(value, options) {
     return verification(true, true);
 }
 exports.postalCode = postalCode;
+
+},{}],"gi6bx":[function(require,module,exports) {
+"use strict";
+var tester = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
+// Thanks to:
+// http://fightingforalostcause.net/misc/2006/compare-email-regex.php
+// http://thedailywtf.com/Articles/Validating_Email_Addresses.aspx
+// http://stackoverflow.com/questions/201323/what-is-the-best-regular-expression-for-validating-email-addresses/201378#201378
+exports.validate = function(email) {
+    if (!email) return false;
+    if (email.length > 254) return false;
+    var valid = tester.test(email);
+    if (!valid) return false;
+    // Further checking of some things regex can't handle
+    var parts = email.split("@");
+    if (parts[0].length > 64) return false;
+    var domainParts = parts[1].split(".");
+    if (domainParts.some(function(part) {
+        return part.length > 63;
+    })) return false;
+    return true;
+};
 
 },{}]},["hVBSo","gkeqZ"], "gkeqZ", "parcelRequire73ba")
 
