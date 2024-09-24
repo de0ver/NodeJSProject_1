@@ -36,7 +36,7 @@ function hex_to_ascii(str1) { //https://www.w3resource.com/javascript-exercises/
 
 function checkCVC()    { return validator.cvv(cvc.value).isValid; }
 function checkDate()   { return validator.expirationDate(month.value + "/" + year.value, (new Date().getFullYear() % 100)).isValid; }
-function checkEmail()  { return email.validate(email.value); }
+function checkEmail()  { return email.validate(emailval.value); }
 function checkNumber() { return validator.number(number.value).isValid; }
 
 function checker(id)
@@ -146,8 +146,8 @@ function drawImage()
 {
     if (number.value)
     {
-        if (!checkNumber() || !checkDate() || !checkEmail() || !checkCVC())
-        image.src = '';
+        //if (!checkNumber() || !checkDate() || !checkEmail() || !checkCVC())
+        //image.src = '';
 
         if (imagesArr.has(validator.number(number.value).card.niceType))
             image.src = imagesArr.get(validator.number(number.value).card.niceType);

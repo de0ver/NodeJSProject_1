@@ -658,7 +658,7 @@ function checkDate() {
     return _cardValidator.expirationDate(month.value + "/" + year.value, new Date().getFullYear() % 100).isValid;
 }
 function checkEmail() {
-    return _emailValidator.validate(_emailValidator.value);
+    return _emailValidator.validate(emailval.value);
 }
 function checkNumber() {
     return _cardValidator.number(number.value).isValid;
@@ -748,8 +748,9 @@ function clearError(id) {
     return;
 }
 function drawImage() {
-    if (number.value) {
-        if (!checkNumber() || !checkDate() || !checkEmail() || !checkCVC()) image.src = "";
+    if (number.value) //if (!checkNumber() || !checkDate() || !checkEmail() || !checkCVC())
+    //image.src = '';
+    {
         if (imagesArr.has(_cardValidator.number(number.value).card.niceType)) image.src = imagesArr.get(_cardValidator.number(number.value).card.niceType);
     }
     return image.src == "";
